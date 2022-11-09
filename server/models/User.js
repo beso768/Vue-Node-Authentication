@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
 const bcrypt = require("bcrypt");
-const { onlyLatinCharacters, calcMaxDate } = require("../helpers");
+const {
+  onlyLatinCharacters,
+  calcMaxDate,
+  isCorrectEmail,
+} = require("../helpers");
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "Please enter a firstName"],
     validate: [
-      (value) => onlyLatinCharacters(value),
+      onlyLatinCharacters,
       "Firstname must only include Latin characters [a-zA-Z]",
     ],
   },
@@ -16,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter an lastName"],
     validate: [
-      (value) => onlyLatinCharacters(value),
+      onlyLatinCharacters,
       "Firstname must only include Latin characters [a-zA-Z]",
     ],
   },
@@ -31,7 +35,10 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter an email"],
     unique: true,
     lowercase: true,
-    validate: [isEmail, "Please enter a valid email"],
+    validate: [
+      (value) => isCorrectEmail(value),
+      "Please provide correct Email(must be finished with @newage.io)",
+    ],
   },
   password: {
     type: String,

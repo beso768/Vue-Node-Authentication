@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const config = require("../config");
 
 // handle errors
 const handleErrors = (err) => {
@@ -34,12 +35,12 @@ const handleErrors = (err) => {
 };
 
 // create json web token
-const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 30 * 60;
 
 const createToken = (id, firstName, lastName, birthday, email) => {
   return jwt.sign(
     { id, firstName, lastName, birthday, email },
-    "net ninja secret",
+    config.authentication.jwtSecret,
     {
       expiresIn: maxAge,
     }
@@ -57,8 +58,9 @@ module.exports.signup = async (req, res) => {
       password,
     });
     const token = createToken(user._id, firstName, lastName, birthday, email);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(201).json({ user: user._id });
+    res
+      .status(201)
+      .json({ id: user._id, firstName, lastName, birthday, email, token });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
@@ -74,9 +76,10 @@ module.exports.signin = async (req, res) => {
       password
     );
     const token = createToken(_id, firstName, lastName, birthday, email);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-    res.status(201).json({ id: _id, firstName, lastName, birthday, email });
+    res
+      .status(201)
+      .json({ id: _id, firstName, lastName, birthday, email, token });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
@@ -88,8 +91,7 @@ module.exports.whoami = (req, res) => {
 };
 
 module.exports.signout = (req, res) => {
-  res.cookie("jwt", "", { maxAge: 1 });
-  res.status(200).json({ user: null });
+  res.status(204).json({ user: null });
 };
 
 module.exports.delete_user = async (req, res) => {
@@ -107,7 +109,6 @@ module.exports.delete_user = async (req, res) => {
     if (user == null || user.deletedCount === 0) {
       res.status(404).json({ errors: "User doesn't exist" });
     } else {
-      res.cookie("jwt", "", { maxAge: 1 });
       res.status(200).json({ user });
     }
   } catch (err) {

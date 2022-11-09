@@ -3,7 +3,7 @@ POST http://localhost:3000/signup
 content-type: application/json
 
 {
-  "email": "email8@test.com",
+  "email": "email2111@newage.io",
   "firstName" : "asd",
   "lastName" : "asdad",
   "birthday" : "10-28-2004",
@@ -21,6 +21,7 @@ content-type: application/json
 
 ### Get the currently signed in user id
 GET http://localhost:3000/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmJlZmZlOGYzMzEyZWIxNzg5ZmFkOSIsImZpcnN0TmFtZSI6ImFzZCIsImxhc3ROYW1lIjoiYXNkYWQiLCJiaXJ0aGRheSI6IjEwLTI4LTIwMDQiLCJlbWFpbCI6ImVtYWlsMjExMUBuZXdhZ2UuaW8iLCJpYXQiOjE2NjgwMTgxNzQsImV4cCI6MTY2ODAxOTk3NH0.aX5E9F39kDKnICKB-ai12ncdW3g10i_nfVXeW5ekLmg
 
 ### Sign out
 POST http://localhost:3000/signout
