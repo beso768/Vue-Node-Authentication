@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
 const { isEmail } = require("validator");
 const bcrypt = require("bcrypt");
-
-const latinRegex = /[a - zA - Z]/;
+const { onlyLatinCharacters, calcMaxDate } = require("../helpers");
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "Please enter a firstName"],
     validate: [
-      (value) => value.match(latinRegex),
+      (value) => onlyLatinCharacters(value),
       "Firstname must only include Latin characters [a-zA-Z]",
     ],
   },
@@ -17,42 +16,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter an lastName"],
     validate: [
-      (value) => value.match(latinRegex),
+      (value) => onlyLatinCharacters(value),
       "Firstname must only include Latin characters [a-zA-Z]",
     ],
   },
   birthday: {
-    type: String,
+    type: Date,
     required: [true, "Please enter an birthday"],
-    validate: [
-      (value) => {
-        const date = new Date(value);
-        if (!date instanceof Date && isNaN(date)) {
-          return false;
-        }
-        // const minDate =  new Date('01-01-1920')
-
-        // if(minDate < date){
-        //   return false
-        // }
-
-        return true;
-      },
-      (value) => {
-        const date = new Date(value);
-        if (!date instanceof Date && isNaN(date)) {
-          return false;
-        }
-        // const minDate =  new Date('01-01-1920')
-
-        // if(minDate < date){
-        //   return false
-        // }
-
-        return false;
-      },
-      "Birthday must only be in 'dd/mm/yyyy'",
-    ],
+    min: "1920-01-01",
+    max: calcMaxDate(),
   },
   email: {
     type: String,

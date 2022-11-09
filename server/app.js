@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
-const { requireAuth, checkUser } = require("./middleware/authMiddleware");
 
 const app = express();
 
@@ -18,16 +17,11 @@ mongoose
   .connect(dbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
   })
   .then((result) => {
     console.log("connected to db");
     app.listen(3000);
   })
   .catch((err) => console.log(err));
-
-app.get("/", (req, res) => {
-  res.send("hello");
-});
 
 app.use(authRoutes);
