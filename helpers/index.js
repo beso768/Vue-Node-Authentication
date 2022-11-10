@@ -31,7 +31,7 @@ async function connectDb() {
 // handle errors
 const handleErrors = (err) => {
   let errors = {};
-
+  console.log(err);
   // incorrect email
   if (err.message === "incorrect email") {
     errors.email = "That email is not registered";
