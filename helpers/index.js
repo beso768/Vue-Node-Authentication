@@ -1,5 +1,6 @@
 const config = require("../config");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 function onlyLatinCharacters(str) {
   return /^[a-zA-Z]+$/.test(str);
@@ -27,9 +28,48 @@ async function connectDb() {
     .catch((err) => console.log(err));
 }
 
+// handle errors
+const handleErrors = (err) => {
+  let errors = {};
+
+  // incorrect email
+  if (err.message === "incorrect email") {
+    errors.email = "That email is not registered";
+  }
+
+  // incorrect password
+  if (err.message === "incorrect password") {
+    errors.password = "That password is incorrect";
+  }
+
+  // duplicate email error
+  if (err.code === 11000) {
+    errors.email = "That email is already registered";
+    return errors;
+  }
+
+  // validation errors
+  if (err.message.match(/Validation failed/i)) {
+    Object.values(err.errors).forEach((errObj) => {
+      const prop = errObj.path ?? errObj.properties.path;
+      errors[prop] = errObj.message;
+    });
+  }
+
+  return errors;
+};
+
+const createToken = (id) => {
+  return jwt.sign({ id }, config.authentication.jwtSecret, {
+    expiresIn: 30 * 60,
+  });
+};
+
 module.exports = {
   onlyLatinCharacters,
   calcMaxDate,
   isCorrectEmail,
   connectDb,
+  handleErrors,
+  createToken,
 };
