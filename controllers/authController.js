@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+let refreshTokens = [];
 
 // handle errors
 const handleErrors = (err) => {
@@ -24,7 +25,6 @@ const handleErrors = (err) => {
 
   // validation errors
   if (err.message.match(/Validation failed/i)) {
-    console.log(err.errors);
     Object.values(err.errors).forEach((errObj) => {
       const prop = errObj.path ?? errObj.properties.path;
       errors[prop] = errObj.message;
@@ -34,17 +34,10 @@ const handleErrors = (err) => {
   return errors;
 };
 
-// create json web token
-const maxAge = 30 * 60;
-
-const createToken = (id, firstName, lastName, birthday, email) => {
-  return jwt.sign(
-    { id, firstName, lastName, birthday, email },
-    config.authentication.jwtSecret,
-    {
-      expiresIn: maxAge,
-    }
-  );
+const createToken = (id) => {
+  return jwt.sign({ id }, config.authentication.jwtSecret, {
+    expiresIn: 10,
+  });
 };
 
 module.exports.signup = async (req, res) => {
@@ -57,7 +50,7 @@ module.exports.signup = async (req, res) => {
       email,
       password,
     });
-    const token = createToken(user._id, firstName, lastName, birthday, email);
+    const token = createToken(user._id);
     res
       .status(201)
       .json({ id: user._id, firstName, lastName, birthday, email, token });
@@ -75,7 +68,7 @@ module.exports.signin = async (req, res) => {
       email,
       password
     );
-    const token = createToken(_id, firstName, lastName, birthday, email);
+    const token = createToken(_id);
 
     res
       .status(201)
@@ -86,8 +79,17 @@ module.exports.signin = async (req, res) => {
   }
 };
 
-module.exports.whoami = (req, res) => {
-  res.status(200).json({ user: res.locals.user });
+module.exports.whoami = async ({ user }, res) => {
+  try {
+    const userObj = await User.findOne({ _id: user._id });
+    res.status(200).json({
+      id: userObj._id,
+      firstName: userObj.firstName,
+      lastName: userObj.lastName,
+      birthday: userObj.birthday,
+      email: userObj.email,
+    });
+  } catch (error) {}
 };
 
 module.exports.signout = (req, res) => {
@@ -95,7 +97,7 @@ module.exports.signout = (req, res) => {
 };
 
 module.exports.delete_user = async (req, res) => {
-  if (res.locals.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId) {
     return res.status(401).json({ errors: "You can not delete this account" });
   }
 
@@ -118,7 +120,7 @@ module.exports.delete_user = async (req, res) => {
 };
 
 module.exports.update_user = async (req, res) => {
-  if (res.locals.user.id !== req.params.userId) {
+  if (req.user.id !== req.params.userId) {
     return res.status(401).json({ errors: "You can not modify this account" });
   }
 
@@ -127,10 +129,13 @@ module.exports.update_user = async (req, res) => {
       { _id: req.params.userId },
       { lastName: req.body.lastname, firstName: req.body.firstName },
       { runValidators: true }
-    ).select({
-      password: 0,
+    );
+    res.status(200).json({
+      id: user._id,
+      lastName: req.body.lastname,
+      firstName: req.body.firstName,
+      email: user.email,
     });
-    res.status(200).json({ user });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
