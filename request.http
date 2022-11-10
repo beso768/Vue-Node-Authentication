@@ -1,5 +1,5 @@
 ### Create a new user
-POST https://serene-retreat-48510.herokuapp.com/auth/sign-up
+POST https://serene-retreat-48510.herokuapp.com/api/auth/sign-up
 content-type: application/json
 
 {
@@ -11,7 +11,7 @@ content-type: application/json
 }
 
 ### Sign in as an existing user
-POST https://serene-retreat-48510.herokuapp.com/auth/sign-in
+POST https://serene-retreat-48510.herokuapp.com/api/auth/sign-in
 content-type: application/json
 
 
@@ -21,18 +21,18 @@ content-type: application/json
 }
 
 ### Get the currently signed in user id
-GET https://serene-retreat-48510.herokuapp.com/auth/me
+GET https://serene-retreat-48510.herokuapp.com/api/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmQxODAzZmZhYjAzYjI0OTc2YTU5OCIsImlhdCI6MTY2ODA5NTIzNCwiZXhwIjoxNjY4MDk3MDM0fQ._iXc0VVfnYDwLFIz2xheeptavY1pPEvL6gDWbbQ6Ln4
 
 
 
 ### Delete a user given id
-DELETE https://serene-retreat-48510.herokuapp.com/auth/users/636d1ce47355b0eab2fcb411
+DELETE https://serene-retreat-48510.herokuapp.com/api/users/636d1ce47355b0eab2fcb411
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmQxODAzZmZhYjAzYjI0OTc2YTU5OCIsImlhdCI6MTY2ODA5NTIzNCwiZXhwIjoxNjY4MDk3MDM0fQ._iXc0VVfnYDwLFIz2xheeptavY1pPEvL6gDWbbQ6Ln4
 
 
 ### Update a user
-PUT https://serene-retreat-48510.herokuapp.com/auth/users/636d1803ffab03b24976a598
+PUT https://serene-retreat-48510.herokuapp.com/api/users/636d1803ffab03b24976a598
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmQxODAzZmZhYjAzYjI0OTc2YTU5OCIsImlhdCI6MTY2ODA5NTIzNCwiZXhwIjoxNjY4MDk3MDM0fQ._iXc0VVfnYDwLFIz2xheeptavY1pPEvL6gDWbbQ6Ln4
 content-type: application/json
 

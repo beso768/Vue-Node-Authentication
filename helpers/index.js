@@ -61,7 +61,7 @@ const handleErrors = (err) => {
 
 const createToken = (id) => {
   return jwt.sign({ id }, config.authentication.jwtSecret, {
-    expiresIn: 30 * 60,
+    expiresIn: 60 * 60,
   });
 };
 

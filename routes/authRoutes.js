@@ -7,12 +7,8 @@ const router = Router();
 
 router.post("/auth/sign-up", authController.signup);
 router.post("/auth/sign-in", authController.signin);
-router.delete(
-  "/auth/users/:userId",
-  isAuthenticated,
-  userhController.delete_user
-);
+router.delete("/users/:userId", isAuthenticated, userhController.delete_user);
 router.get("/auth/me", isAuthenticated, userhController.whoami);
-router.put("/auth/users/:userId", isAuthenticated, userhController.update_user);
+router.put("/users/:userId", isAuthenticated, userhController.update_user);
 
 module.exports = router;
