@@ -18,7 +18,7 @@ function isCorrectEmail(email) {
 
 async function connectDb() {
   // database connection
-  const dbURI = `mongodb+srv://${config.db.name}:${config.db.password}@cluster0.4fppqix.mongodb.net/?retryWrites=true&w=majority`;
+  const dbURI = `mongodb://${config.db.name}:${config.db.password}@ac-0apr8ga-shard-00-00.4fppqix.mongodb.net:27017,ac-0apr8ga-shard-00-01.4fppqix.mongodb.net:27017,ac-0apr8ga-shard-00-02.4fppqix.mongodb.net:27017/?ssl=true&replicaSet=atlas-126h7f-shard-0&authSource=admin&retryWrites=true&w=majority`;
 
   return mongoose
     .connect(dbURI, {
